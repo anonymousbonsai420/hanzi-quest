@@ -1,0 +1,41 @@
+# Required check: only allowed source → target pairs can be merged.
+#   main    ← develop (release) | hotfix/*
+#   develop ← feature/* | fix/* | main (backport)
+name: Branch rules
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions: {}
+
+jobs:
+  branch-rules:
+    name: branch-rules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source and target branches
+        env:
+          HEAD: ${{ github.head_ref }}
+          BASE: ${{ github.base_ref }}
+          SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          name='[a-z0-9][a-z0-9._-]*'
+          ok=false
+          case "$BASE" in
+            main)
+              if [[ "$HEAD" == "develop" && "$SAME_REPO" == "true" ]] || [[ "$HEAD" =~ ^hotfix/$name$ ]]; then ok=true; fi
+              rule="main only accepts PRs from develop (release) or hotfix/<name>" ;;
+            develop)
+              if [[ "$HEAD" =~ ^(feature|fix)/$name$ ]] || [[ "$HEAD" == "main" && "$SAME_REPO" == "true" ]]; then ok=true; fi
+              rule="develop only accepts PRs from feature/<name>, fix/<name> or main (backport)" ;;
+            *)
+              if [[ "$HEAD" =~ ^(feature|fix|hotfix)/$name$ ]]; then ok=true; fi
+              rule="branches must be named feature/<name>, fix/<name> or hotfix/<name>" ;;
+          esac
+          if [[ "$ok" == "true" ]]; then
+            echo "✅ $HEAD → $BASE is allowed."
+          else
+            echo "::error::$HEAD → $BASE is not allowed: $rule. See .claude/CLAUDE.md."
+            exit 1
+          fi

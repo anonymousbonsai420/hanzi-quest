@@ -1,0 +1,64 @@
+# After every release or hotfix lands on main, merge main back into develop
+# so the next release can never overwrite production code.
+name: Backport main → develop
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: backport
+  cancel-in-progress: false
+
+jobs:
+  backport:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Open and merge the backport PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git fetch origin main develop
+          if git merge-base --is-ancestor origin/main origin/develop; then
+            echo "develop already contains main — nothing to backport."
+            exit 0
+          fi
+          SHA=$(git rev-parse origin/main)
+
+          PR=$(gh pr list --repo "$REPO" --base develop --head main --state open --json number --jq '.[0].number // empty')
+          if [[ -z "$PR" ]]; then
+            URL=$(gh pr create --repo "$REPO" --base develop --head main \
+              --title "Backport: main → develop" \
+              --body "Automatic backport after a release/hotfix on \`main\` (${SHA:0:7}). Keeps \`develop\` in sync so the next release does not overwrite production code.")
+            PR=${URL##*/}
+          fi
+          echo "Backport PR: #$PR"
+
+          # PRs opened with GITHUB_TOKEN do not trigger other workflows, so report the required check here.
+          gh api -X POST "repos/$REPO/statuses/$SHA" \
+            -f state=success -f context=branch-rules -f description="Automatic backport main → develop" >/dev/null
+
+          for attempt in 1 2 3 4 5 6; do
+            if gh pr merge "$PR" --repo "$REPO" --merge --subject "Backport: main → develop (#$PR)"; then
+              echo "✅ Backport merged."
+              exit 0
+            fi
+            echo "Merge not possible yet (attempt $attempt), retrying…"
+            sleep 10
+          done
+
+          gh pr comment "$PR" --repo "$REPO" --body "⚠️ The automatic backport could not be merged (probably conflicts). Resolve it on a \`fix/backport-<date>\` branch created from \`develop\` (see .claude/CLAUDE.md → Release and backport) and merge with a merge commit."
+          echo "::error::Backport PR #$PR could not be merged automatically — resolve conflicts manually."
+          exit 1

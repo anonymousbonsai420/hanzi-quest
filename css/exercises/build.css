@@ -1,0 +1,10 @@
+/* Exercício · montar frase */
+.build-source { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 20px; }
+.mascot { font-size: 3rem; }
+.bubble { background: var(--surface); border: 2px solid var(--line); border-radius: 16px 16px 16px 4px; padding: 12px 16px; font-weight: 700; font-size: 1.1rem; }
+.build-line { min-height: 74px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; padding: 10px 0; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); margin-bottom: 22px;
+  background-image: linear-gradient(transparent 62px, var(--line) 62px, var(--line) 64px, transparent 64px); background-size: 100% 72px; }
+.build-bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.tile-slot { display: inline-flex; min-width: 48px; min-height: 58px; border-radius: 12px; background: var(--surface-2); }
+.tile { display: inline-flex; flex-direction: column; align-items: center; padding: 6px 12px; border-radius: 12px; background: var(--surface); border: 2px solid var(--line); box-shadow: 0 3px 0 var(--line); min-width: 48px; }
+.tile:active { transform: translateY(2px); box-shadow: none; }

@@ -1,0 +1,16 @@
+/* Tela Praticar */
+.practice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-top: 14px; }
+.practice-tile {
+  --c: var(--red); --cd: var(--red-d);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 18px;
+  border-radius: var(--radius); background: var(--surface); border: 2px solid var(--line); box-shadow: 0 5px 0 var(--line);
+  transition: transform .08s;
+}
+.practice-tile:hover { border-color: var(--c); }
+.practice-tile:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--line); }
+.practice-tile.red { --c: var(--red); } .practice-tile.purple { --c: var(--purple); } .practice-tile.jade { --c: var(--jade); }
+.practice-tile.gold { --c: var(--gold); } .practice-tile.blue { --c: var(--blue); } .practice-tile.teal { --c: var(--teal); } .practice-tile.orange { --c: var(--orange); }
+.pt-icon { font-size: 2rem; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 16px; background: color-mix(in srgb, var(--c, var(--blue)) 15%, transparent); margin-bottom: 6px; }
+.pt-title { font-weight: 900; font-size: 1.05rem; }
+.pt-desc { color: var(--muted); font-size: .88rem; }
+.pt-warn { font-size: .75rem; color: var(--orange); font-weight: 700; }

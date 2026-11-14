@@ -1,16 +1,30 @@
 // Ponto de entrada: barra superior, navegação entre telas e eventos globais.
-import { $, h, bus } from './util.js';
+import { $, h, esc } from './lib/dom.js';
+import { bus } from './lib/events.js';
+import { modal } from './ui/modal.js';
+import { toast } from './ui/toast.js';
+import { confetti } from './ui/confetti.js';
 import { state } from './state.js';
 import { checkStreakOnLoad, refreshHearts, ensureQuests, levelInfo, nextHeartIn, HEART_MAX, practicedToday, checkAchievements } from './game.js';
-import { renderPath, renderReview, renderPractice, renderCollection, renderProfile, setRerender, applyTheme, onboarding } from './screens.js';
+import { renderPath } from './screens/path.js';
+import { renderReview } from './screens/review.js';
+import { renderPractice } from './screens/practice.js';
+import { renderCollection } from './screens/collection.js';
+import { renderProfile } from './screens/profile.js';
+import { onboarding } from './screens/onboarding.js';
+import { setRerender } from './screens/rerender.js';
+import { applyTheme } from './theme.js';
 import { dueIds } from './srs.js';
-import { toast, modal, confetti } from './ui.js';
 import { sfx } from './audio.js';
+import { renderFriends } from './friend-mode/screen.js';
+import { signupModal } from './friend-mode/forms.js';
+import { initCloud, cloudStatus, incomingCount, takeLinkInvite } from './friend-mode/cloud.js';
 
 const TABS = {
   path: { icon: '🗺️', label: 'Trilha', render: renderPath },
   review: { icon: '🔁', label: 'Revisar', render: renderReview },
   practice: { icon: '🎯', label: 'Praticar', render: renderPractice },
+  friends: { icon: '👥', label: 'Amigos', render: renderFriends },
   collection: { icon: '🀄', label: 'Hanzi', render: renderCollection },
   profile: { icon: '🐼', label: 'Perfil', render: renderProfile },
 };
@@ -36,7 +50,8 @@ function renderNav() {
     h('div', { class: 'brand' }, h('span', { class: 'brand-zh' }, '汉字之旅'), h('span', { class: 'brand-pt' }, 'Hanzi Quest')),
     ...Object.entries(TABS).map(([k, t]) => h('a', { href: `#/${k}`, class: `tab ${k === tab ? 'active' : ''}`, 'aria-current': k === tab ? 'page' : null },
       h('span', { class: 'tab-icon' }, t.icon), h('span', { class: 'tab-label' }, t.label),
-      k === 'review' && due > 0 && h('span', { class: 'tab-badge' }, due > 99 ? '99+' : due))));
+      k === 'review' && due > 0 && h('span', { class: 'tab-badge' }, due > 99 ? '99+' : due),
+      k === 'friends' && incomingCount() > 0 && h('span', { class: 'tab-badge' }, incomingCount()))));
 }
 
 function renderTop() {
@@ -70,10 +85,26 @@ bus.on('freezeUsed', (n) => toast(`Um congelamento protegeu sua ofensiva (${n} d
 bus.on('streakLost', (n) => toast(`Sua ofensiva de ${n} dias acabou. Comece uma nova hoje!`, { icon: '🥶', ms: 5000 }));
 bus.on('change', () => { renderTop(); });
 
+// ---------- modo Amigos ----------
+bus.on('cloud', () => { if (currentTab() === 'friends') render(); else renderNav(); });
+bus.on('overview', () => { renderNav(); checkAchievements(); });
+bus.on('overtaken', (p) => toast(`<b>${esc(p.display_name)} passou você!</b><br>${p.week_xp} XP nesta semana. Bora recuperar? 加油！`, { icon: p.avatar, ms: 5000 }));
+bus.on('weeklyPrize', ({ pos, prize, xp }) => celebrate(() => {
+  sfx.levelup();
+  if (pos === 0) confetti(200);
+  modal({
+    title: ['🥇 Campeão da semana!', '🥈 2º lugar na semana!', '🥉 3º lugar na semana!'][pos],
+    body: `<div class="center"><p>Você fez <b>${xp} XP</b> na semana passada entre seus amigos.</p><p>+${prize} 💰 de prêmio</p></div>`,
+    actions: [{ label: '太棒了！', value: true }],
+  });
+  checkAchievements();
+}));
+
 // ---------- inicialização ----------
 async function init() {
   applyTheme();
   setRerender(render);
+  const cloudReady = initCloud().catch(() => {});
   checkStreakOnLoad();
   refreshHearts();
   ensureQuests();
@@ -85,6 +116,12 @@ async function init() {
     render();
   }
   checkAchievements();
+  await cloudReady;
+  const invite = takeLinkInvite();
+  if (invite) {
+    if (cloudStatus() === 'signedOut') signupModal(invite);
+    else if (cloudStatus() !== 'off') toast('Você já está numa conta do modo Amigos. Saia dela para usar outro convite.', { icon: '🎟️', ms: 5000 });
+  }
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }

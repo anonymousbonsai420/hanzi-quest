@@ -41,6 +41,13 @@ Abra **http://localhost:5173** no **Chrome ou Edge**. O reconhecimento de fala u
 - **Combos**, confete, efeitos sonoros, mapa de atividade (12 semanas)
 - **Desafio relâmpago** de 60 s com recorde
 
+### Modo Amigos 👥 (opcional, só por convite)
+- **Placar com amigos**: XP da semana (zera toda segunda), XP total, ofensiva e recorde do Desafio relâmpago
+- **Você × amigo**: estatísticas lado a lado e os dois mapas de atividade
+- **Pódio semanal** ganha 50 / 25 / 10 💰; avisos quando alguém passa você; conquistas de turma
+- **Acesso controlado**: cadastro só com convite de uso único, limite de membros (padrão 5) e painel do administrador para criar convites e revogar acessos
+- O progresso continua no aparelho; a conta só compartilha as estatísticas com os amigos aceitos
+
 ### Memória
 - **Repetição espaçada SM-2**: uma nota por palavra por sessão, com previsão de revisões e níveis de domínio
 - **Coleção de Hanzi** com domínio, próxima revisão, exemplos e animação de traços
@@ -51,25 +58,65 @@ Saudações · Pessoas · Números · Família · Comida · Tempo · Lugares · 
 
 ## Estrutura
 
+Um arquivo por responsabilidade, agrupado por domínio, tanto no CSS quanto no JS:
+- `js/lib/`: utilitários genéricos, sem regra do app (DOM, tempo, aleatoriedade, eventos);
+- `js/ui/`: componentes visuais reutilizáveis;
+- uma pasta por área do app (telas, sessão, exercícios, modo Amigos), com o CSS espelhando o JS.
+
 ```
-index.html            Shell + carregamento do Hanzi Writer (CDN)
-css/styles.css        Tema claro/escuro, layout mobile e desktop
-js/app.js             Navegação, barra superior, eventos globais
-js/screens.js         Telas: Trilha, Revisar, Praticar, Hanzi, Perfil, onboarding
-js/session.js         Executor de sessões, resultados, Desafio relâmpago, Espelho de tons
-js/exercises.js       Os tipos de exercício
-js/builder.js         Monta lições, revisões e treinos
-js/data.js            Conteúdo do curso (para adicionar unidades, edite aqui)
-js/pinyin.js          Pinyin numérico ↔ acentuado, verificação, contornos de tom
-js/speech.js          Reconhecimento de fala + pontuação por alinhamento
-js/pitch.js           Detecção de altura da voz
-js/audio.js           Voz (TTS zh-CN) e efeitos sonoros
-js/srs.js             Repetição espaçada
-js/game.js            XP, níveis, ofensiva, vidas, loja, missões, conquistas
-js/state.js           Persistência em localStorage (exportar/importar no Perfil)
-js/guide.js           Guia de estudo dentro do app
-sw.js                 Service worker (offline)
-METODOLOGIA.md        Métodos e processos de aprendizado sugeridos
+index.html                Shell; carrega o CSS (na ordem certa) e o Hanzi Writer (CDN)
+sw.js                     Service worker (offline)
+
+css/
+  base.css                Cores do tema claro/escuro, reset, utilitários, cores de tom, tipografia de hanzi
+  layout.css              Estrutura do app, abas de navegação e barra superior
+  components.css          Botões, cartões, medidores, modais, toasts
+  screens/                Uma folha por tela: path, review, practice, collection, profile, onboarding
+  session/                session (sobreposição e rodapé), results, speed, tone-mirror
+  exercises/              blocks (comum) + uma folha por tipo: intro, tone, pinyin, speak, write, build, match
+  writer.css              Quadriculado 田字格 (escrita, palavra nova, modal da palavra)
+  guide.css               Guia de estudo
+  friend-mode.css         Modo Amigos
+
+js/
+  app.js                  Navegação, barra superior, eventos globais, inicialização
+  lib/                    Utilitários por domínio:
+    dom.js                  criar elementos (h), $, variáveis CSS, escape de HTML
+    time.js                 dias 'AAAA-MM-DD', datas relativas e curtas, espera (sleep)
+    random.js               embaralhar e sortear
+    events.js               barramento de eventos (bus)
+  ui/                     Componentes: modal, toast, confetti, heatmap (mapa de atividade), share (compartilhar)
+  screens/                Uma tela por arquivo: path, review, practice, collection, profile, onboarding
+                          (rerender.js: redesenha a tela atual)
+  session/                runner.js (lições, revisões, treinos e resultados), speed.js (Desafio relâmpago),
+                          tone-mirror.js (Espelho de tons), overlay.js (tela cheia das sessões)
+  exercises/              index.js (registro tipo → função), blocks.js (peças comuns) e um arquivo por tipo:
+                          intro, meaning, listen, pinyin, speak, write, build, match, tone
+  friend-mode/            Modo Amigos:
+    screen.js               aba Amigos (perfil, pedidos, placar, adicionar amigo)
+    forms.js                criar conta com convite, entrar, editar perfil
+    compare.js              você × amigo
+    admin.js                painel do administrador (membros e convites)
+    actions.js              ação de botão com estado ocupado e erro do servidor
+    cloud.js                conta, sincronização do progresso e chamadas ao Supabase
+    mock.js                 servidor simulado para testes em localhost (?mock)
+    config.js               URL e chave pública do Supabase (vazio = modo Amigos desligado)
+  builder.js              Monta lições, revisões e treinos
+  data.js                 Conteúdo do curso (para adicionar unidades, edite aqui)
+  pinyin.js               Pinyin numérico ↔ acentuado, verificação, contornos de tom
+  speech.js               Reconhecimento de fala + pontuação por alinhamento
+  pitch.js                Detecção de altura da voz
+  audio.js                Voz (TTS zh-CN) e efeitos sonoros
+  writer.js               Escrita de caracteres (Hanzi Writer + quadriculado 田字格)
+  srs.js                  Repetição espaçada
+  game.js                 XP, níveis, ofensiva, vidas, loja, missões, conquistas
+  state.js                Persistência em localStorage (exportar/importar no Perfil)
+  theme.js                Tema claro/escuro/automático
+  guide.js                Guia de estudo dentro do app
+
+supabase/schema.sql       Banco do modo Amigos: tabelas, regras de acesso e funções
+supabase/test/            Testes do banco (Postgres embutido)
+METODOLOGIA.md            Métodos e processos de aprendizado sugeridos
 ```
 
 ## Requisitos e limitações
@@ -79,6 +126,30 @@ METODOLOGIA.md        Métodos e processos de aprendizado sugeridos
 - **Escrita:** os dados de traços vêm do CDN jsDelivr na primeira vez e depois ficam em cache para uso offline.
 - **Espelho de tons:** a classificação é heurística. Funciona melhor com sílabas isoladas, faladas devagar e sem ruído.
 - O progresso fica no navegador (localStorage). Use *Exportar progresso* para fazer backup.
+
+## Modo Amigos: configuração (administrador)
+
+O modo Amigos usa um projeto **gratuito** do [Supabase](https://supabase.com) (banco Postgres + login). Sem configurar, o app funciona normalmente e a aba Amigos só explica o recurso.
+
+1. Crie uma conta e um projeto no Supabase (plano Free).
+2. **SQL Editor** → cole todo o arquivo [`supabase/schema.sql`](supabase/schema.sql) → **Run**. O resultado mostra o seu **convite de administrador** (válido por 7 dias). Se ele expirar, rode o arquivo de novo e outro é gerado.
+3. **Authentication → Sign In / Providers**:
+   - **Email**: deixe ligado e **desative "Confirm email"**. O login é por nome de usuário; o app cria um e-mail interno `usuario@hanzi-quest.invalid`, e nenhum e-mail é enviado.
+   - **Allow new users to sign up**: deixe ligado. Quem barra cadastros sem convite é o banco.
+   - **Anonymous sign-ins**: deixe desligado (é o padrão).
+4. **Project Settings → API Keys**: copie a **Project URL** e a chave pública (**publishable** / **anon**) para [`js/friend-mode/config.js`](js/friend-mode/config.js). Nunca use a chave `service_role` / `secret`.
+5. Publique, abra o app → **Amigos** → **Tenho um convite** → use o convite de administrador e crie sua conta.
+6. No painel 🛡️ da aba Amigos: gere um convite por amigo e envie o link (`…/hanzi-quest/?invite=HQ-XXXX-XXXX`). Quem entra pelo seu convite já vira seu amigo.
+
+**Regras de acesso:** todo o banco fica fechado para a chave pública; o app só chama as funções de `schema.sql`, e elas exigem um membro **ativo**. O limite conta todos os membros ativos, incluindo o administrador (mude no painel). Revogar alguém bloqueia o acesso na hora e libera a vaga.
+
+**Tarefas que ficam no painel do Supabase:**
+- *Apagar uma conta*: Authentication → Users → Delete user (os dados dela somem junto).
+- *Redefinir uma senha* (não há recuperação por e-mail): SQL Editor →
+  `update auth.users set encrypted_password = extensions.crypt('NOVA-SENHA', extensions.gen_salt('bf')) where email = 'usuario@hanzi-quest.invalid';`
+- O plano Free **pausa o projeto após 7 dias sem uso**. Se isso acontecer, reative em Project → Restore.
+
+**Testar sem Supabase:** `node server.js` e abra **http://localhost:5173/?mock** (servidor simulado no navegador; convite de admin `HQ-TEST-ADMN`, membros fictícios Ana e Bruno). Testes do banco: `cd supabase/test && npm i --no-save @electric-sql/pglite@0.2.17 && node schema.test.mjs`.
 
 ## Contribuindo (fluxo de branches)
 
@@ -97,7 +168,7 @@ O projeto usa gitflow, e as regras valem para pessoas e para agentes de IA ([.cl
 ## Próximos passos sugeridos
 
 1. **Mais conteúdo:** HSK 2–3, unidades de radicais (部首) e pares de tons.
-2. **Conta e sincronização** (backend) para usar em vários dispositivos, com ligas semanais reais.
+2. **Backup na nuvem** do progresso completo, para continuar em outro aparelho (próximo PR do modo Amigos).
 3. **Parceiro de conversa com IA:** diálogos guiados por cenário (restaurante, táxi) com correção de gramática e tons.
 4. **Avaliação de pronúncia mais precisa** com um serviço de *pronunciation assessment* que pontua tom por sílaba.
 5. **Leituras graduadas** curtas com toque-para-traduzir.

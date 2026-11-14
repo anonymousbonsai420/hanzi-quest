@@ -1,6 +1,8 @@
 // Mecânicas de gamificação: XP, níveis, ofensiva, vidas, moedas, missões e conquistas.
 import { state, save } from './state.js';
-import { bus, todayKey, dayDiff, addDays, sample, pick } from './util.js';
+import { bus } from './lib/events.js';
+import { sample, pick } from './lib/random.js';
+import { todayKey, dayDiff, addDays } from './lib/time.js';
 import { UNITS } from './data.js';
 
 export const HEART_MAX = 5;
@@ -195,6 +197,11 @@ export const ACHIEVEMENTS = [
   { id: 'review100', icon: '🐘', name: 'Memória de elefante', desc: 'Faça 100 revisões', test: (s) => s.stats.reviews >= 100 },
   { id: 'level5', icon: '⭐', name: 'Nível 5', desc: 'Alcance o nível 5', test: (s) => levelInfo(s.xp).level >= 5 },
   { id: 'level10', icon: '🌟', name: 'Nível 10', desc: 'Alcance o nível 10', test: (s) => levelInfo(s.xp).level >= 10 },
+  // modo Amigos
+  { id: 'friend1', icon: '🤝', name: 'Turma formada', desc: 'Tenha seu primeiro amigo no modo Amigos', test: (s) => s.cloud?.friends >= 1 },
+  { id: 'champion', icon: '🥇', name: 'Campeão da semana', desc: 'Termine uma semana em 1º lugar entre amigos', test: (s) => s.cloud?.weeklyWins >= 1 },
+  { id: 'champion3', icon: '🏆', name: 'Tricampeão', desc: 'Vença 3 semanas entre amigos', test: (s) => s.cloud?.weeklyWins >= 3 },
+  { id: 'speedtop', icon: '💨', name: 'Mais rápido da turma', desc: 'Tenha o maior recorde do Desafio relâmpago entre seus amigos', test: (s) => !!s.cloud?.speedTop },
 ];
 
 export function checkAchievements() {

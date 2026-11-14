@@ -1,12 +1,28 @@
 // Service worker: permite usar o app offline.
 // Arquivos do app: rede primeiro (sempre atualizado), cache como reserva.
 // CDN (Hanzi Writer, dados de traços, fontes): cache primeiro.
-const CACHE = 'hanziquest-v1';
+const CACHE = 'hanziquest-v4';
 const SHELL = [
-  './', 'index.html', 'css/styles.css', 'manifest.webmanifest', 'icon.svg',
-  'js/app.js', 'js/util.js', 'js/data.js', 'js/pinyin.js', 'js/state.js', 'js/srs.js', 'js/game.js',
-  'js/audio.js', 'js/speech.js', 'js/pitch.js', 'js/writer.js', 'js/ui.js', 'js/exercises.js',
-  'js/builder.js', 'js/session.js', 'js/screens.js', 'js/guide.js',
+  './', 'index.html', 'manifest.webmanifest', 'icon.svg',
+  'css/base.css', 'css/components.css', 'css/exercises/blocks.css', 'css/exercises/build.css',
+  'css/exercises/intro.css', 'css/exercises/match.css', 'css/exercises/pinyin.css', 'css/exercises/speak.css',
+  'css/exercises/tone.css', 'css/exercises/write.css', 'css/friend-mode.css', 'css/guide.css',
+  'css/layout.css', 'css/screens/collection.css', 'css/screens/onboarding.css', 'css/screens/path.css',
+  'css/screens/practice.css', 'css/screens/profile.css', 'css/screens/review.css', 'css/session/results.css',
+  'css/session/session.css', 'css/session/speed.css', 'css/session/tone-mirror.css', 'css/writer.css',
+  'js/app.js', 'js/audio.js', 'js/builder.js', 'js/data.js',
+  'js/exercises/blocks.js', 'js/exercises/build.js', 'js/exercises/index.js', 'js/exercises/intro.js',
+  'js/exercises/listen.js', 'js/exercises/match.js', 'js/exercises/meaning.js', 'js/exercises/pinyin.js',
+  'js/exercises/speak.js', 'js/exercises/tone.js', 'js/exercises/write.js', 'js/friend-mode/actions.js',
+  'js/friend-mode/admin.js', 'js/friend-mode/cloud.js', 'js/friend-mode/compare.js', 'js/friend-mode/config.js',
+  'js/friend-mode/forms.js', 'js/friend-mode/screen.js', 'js/game.js', 'js/guide.js',
+  'js/lib/dom.js', 'js/lib/events.js', 'js/lib/random.js', 'js/lib/time.js',
+  'js/pinyin.js', 'js/pitch.js', 'js/screens/collection.js', 'js/screens/onboarding.js',
+  'js/screens/path.js', 'js/screens/practice.js', 'js/screens/profile.js', 'js/screens/rerender.js',
+  'js/screens/review.js', 'js/session/overlay.js', 'js/session/runner.js', 'js/session/speed.js',
+  'js/session/tone-mirror.js', 'js/speech.js', 'js/srs.js', 'js/state.js',
+  'js/theme.js', 'js/ui/confetti.js', 'js/ui/heatmap.js', 'js/ui/modal.js',
+  'js/ui/share.js', 'js/ui/toast.js', 'js/writer.js',
 ];
 
 self.addEventListener('install', (e) => {

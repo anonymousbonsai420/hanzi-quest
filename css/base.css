@@ -1,0 +1,82 @@
+/* Base: cores (tema claro/escuro), reset, utilitários, cores de tom e tipografia de hanzi */
+:root {
+  --bg: #fbf7f0; --surface: #ffffff; --surface-2: #f4eee4; --ink: #221c18; --muted: #6f655c; --line: #e8dfd2;
+  --outline: #e2d8ca;
+  --red: #d62839; --red-d: #a51d2c; --gold: #f2a51a; --gold-d: #c47f05; --jade: #16a36b; --jade-d: #0e7a4f;
+  --blue: #2f6fdf; --blue-d: #1f4fae; --purple: #7c4ddb; --purple-d: #5b33ad; --teal: #1b8a8f; --teal-d: #12676b;
+  --orange: #e86a1c; --orange-d: #b84f0f;
+  --ok-bg: #dcf5e7; --ok-ink: #0d6b45; --bad-bg: #fde2e2; --bad-ink: #a51d2c;
+  --t1: #e5383b; --t2: #e8890c; --t3: #2b9348; --t4: #2f6fdf; --t5: #8a817c;
+  --m1: #f4a7a7; --m2: #f6c56b; --m3: #a8d672; --m4: #4fbf86; --m5: #1f8f5f;
+  --radius: 18px;
+  --hz-font: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  --ui-font: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15120f; --surface: #211d19; --surface-2: #2b2621; --ink: #f4ede3; --muted: #a99e92; --line: #3a332c;
+    --outline: #4a4239;
+    --red: #ef4655; --red-d: #b52434; --gold: #f5b331; --gold-d: #b97c0a; --jade: #22b97b; --jade-d: #128556;
+    --blue: #4d86ec; --blue-d: #2c5cb8; --purple: #9671e6; --purple-d: #6c46c0; --teal: #2aa6ab; --teal-d: #1a7c80;
+    --orange: #f07c34; --orange-d: #c25a17;
+    --ok-bg: #12382a; --ok-ink: #7be3b0; --bad-bg: #3d1a1d; --bad-ink: #ff9aa3;
+    --t1: #ff6163; --t2: #ffa53a; --t3: #4fc46e; --t4: #6aa1ff; --t5: #a39a94;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15120f; --surface: #211d19; --surface-2: #2b2621; --ink: #f4ede3; --muted: #a99e92; --line: #3a332c;
+  --outline: #4a4239;
+  --red: #ef4655; --red-d: #b52434; --gold: #f5b331; --gold-d: #b97c0a; --jade: #22b97b; --jade-d: #128556;
+  --blue: #4d86ec; --blue-d: #2c5cb8; --purple: #9671e6; --purple-d: #6c46c0; --teal: #2aa6ab; --teal-d: #1a7c80;
+  --orange: #f07c34; --orange-d: #c25a17;
+  --ok-bg: #12382a; --ok-ink: #7be3b0; --bad-bg: #3d1a1d; --bad-ink: #ff9aa3;
+  --t1: #ff6163; --t2: #ffa53a; --t3: #4fc46e; --t4: #6aa1ff; --t5: #a39a94;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--ui-font); font-size: 16px; line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+body.in-session { overflow: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+button:disabled { cursor: default; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { line-height: 1.2; margin: 0 0 .5em; }
+p { margin: 0 0 .6em; }
+.hidden, [hidden] { display: none !important; }
+.muted { color: var(--muted); }
+.small { font-size: .875rem; }
+.center { text-align: center; }
+.grow { flex: 1; min-width: 0; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
+
+/* Cores de tom */
+.t1 { color: var(--t1); } .t2 { color: var(--t2); } .t3 { color: var(--t3); } .t4 { color: var(--t4); } .t5 { color: var(--t5); }
+.tone-svg .tone-grid { stroke: var(--line); stroke-width: 1; }
+.tone-svg .tone-line { stroke-width: 4; stroke-linecap: round; }
+.t1-stroke { stroke: var(--t1); } .t2-stroke { stroke: var(--t2); } .t3-stroke { stroke: var(--t3); } .t4-stroke { stroke: var(--t4); } .t5-stroke { stroke: var(--t5); }
+
+/* Tipografia de hanzi */
+.hz { font-family: var(--hz-font); font-weight: 500; line-height: 1.1; }
+.hz.xxl { font-size: clamp(64px, 18vw, 96px); }
+.hz.xl { font-size: clamp(48px, 13vw, 72px); }
+.hz.lg { font-size: clamp(30px, 8vw, 44px); }
+.hz.md { font-size: 30px; }
+.hz.sm { font-size: 22px; }
+.hz-inline { font-family: var(--hz-font); font-size: 1.15em; }
+.py { font-weight: 700; letter-spacing: .02em; }
+.py.big { font-size: 1.5rem; }
+.py.small { font-size: .85rem; }
+.py.tiny { font-size: .72rem; font-weight: 600; }
+.meaning { font-weight: 700; }
+.meaning.big { font-size: 1.25rem; }
+.big-num { font-size: 3.5rem; font-weight: 900; line-height: 1; margin-bottom: .2em; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

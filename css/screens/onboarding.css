@@ -1,0 +1,3 @@
+/* Boas-vindas (primeiro acesso) */
+.onboard .modal-actions { flex-direction: column; }
+.onboard .modal-actions .btn { flex: none; }

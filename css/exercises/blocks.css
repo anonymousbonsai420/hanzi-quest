@@ -1,0 +1,24 @@
+/* Blocos comuns dos exercícios: enunciado, bloco de hanzi, áudio e múltipla escolha */
+.ex-prompt { margin-bottom: 18px; }
+.ex-prompt h2 { font-size: 1.45rem; font-weight: 900; }
+.head-row { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+.hz-block { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.hz-block .hz { padding: 0 6px; border-radius: 14px; }
+.hz-block .hz:hover { background: var(--surface-2); }
+.head-row .py { font-size: 1.5rem; }
+.stroke-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 6px 0; }
+.listen-box { display: flex; justify-content: center; margin: 12px 0 28px; }
+.opts { display: grid; gap: 10px; }
+.opts.grid { grid-template-columns: repeat(2, 1fr); }
+.opt {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; text-align: left;
+  background: var(--surface); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); font-weight: 700; font-size: 1.05rem;
+}
+.opts.grid .opt { justify-content: center; flex-direction: column; gap: 4px; padding: 18px 10px; }
+.opt-k { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line); font-size: .78rem; color: var(--muted); flex-shrink: 0; }
+.opts.grid .opt-k { display: none; }
+.opt-hz { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.opt.sel { border-color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, var(--surface)); box-shadow: 0 4px 0 var(--blue); }
+.opt.right { border-color: var(--jade); background: var(--ok-bg); box-shadow: 0 4px 0 var(--jade); }
+.opt.wrong { border-color: var(--red); background: var(--bad-bg); box-shadow: 0 4px 0 var(--red); }
+.opt:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }

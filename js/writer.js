@@ -1,5 +1,5 @@
 // Integração com Hanzi Writer (ordem dos traços, animação e quiz de escrita).
-import { cssVar } from './util.js';
+import { cssVar } from './lib/dom.js';
 
 export const writerAvailable = () => !!window.HanziWriter;
 

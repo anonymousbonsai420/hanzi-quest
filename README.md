@@ -80,6 +80,20 @@ METODOLOGIA.md        Métodos e processos de aprendizado sugeridos
 - **Espelho de tons:** a classificação é heurística. Funciona melhor com sílabas isoladas, faladas devagar e sem ruído.
 - O progresso fica no navegador (localStorage). Use *Exportar progresso* para fazer backup.
 
+## Contribuindo (fluxo de branches)
+
+O projeto usa gitflow, e as regras valem para pessoas e para agentes de IA ([.claude/CLAUDE.md](.claude/CLAUDE.md)):
+
+| Branch | Sai de | Entra em |
+|---|---|---|
+| `feature/<nome>`, `fix/<nome>` | `develop` | `develop` (PR) |
+| `develop` | `main` | `main` (PR de release, merge commit) |
+| `hotfix/<nome>` | `main` | `main` (PR) |
+
+- `main` e `develop` são protegidas: não aceitam push direto, force-push nem exclusão. Tudo entra por PR, que precisa passar na checagem `branch-rules`.
+- **Backport automático:** depois de cada release ou hotfix na `main`, o workflow `backport.yml` mescla a `main` de volta na `develop`. Assim o próximo release não sobrescreve código que já está em produção.
+- No Claude Code, o hook `.claude/hooks/git-guard.js` barra comandos git/gh fora dessas regras antes de rodarem.
+
 ## Próximos passos sugeridos
 
 1. **Mais conteúdo:** HSK 2–3, unidades de radicais (部首) e pares de tons.

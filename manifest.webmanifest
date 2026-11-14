@@ -1,0 +1,15 @@
+{
+  "name": "Hanzi Quest · 汉字之旅",
+  "short_name": "Hanzi Quest",
+  "description": "Aprenda mandarim jogando: fala, escrita, tons e repetição espaçada.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf7f0",
+  "theme_color": "#d62839",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

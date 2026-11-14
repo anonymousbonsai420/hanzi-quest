@@ -1,10 +1,13 @@
 // Tela Perfil: nível, estatísticas, atividade, conquistas, loja e configurações.
-import { h, todayKey } from '../util.js';
+import { h } from '../lib/dom.js';
+import { todayKey } from '../lib/time.js';
+import { modal } from '../ui/modal.js';
+import { toast } from '../ui/toast.js';
+import { heatmap } from '../ui/heatmap.js';
 import { state, save, resetAll, exportData, importData } from '../state.js';
 import { levelInfo, ACHIEVEMENTS, buy, PRICES, HEART_MAX } from '../game.js';
 import { speak, voiceName, hasChineseVoice, ttsSupported } from '../audio.js';
 import { asrSupported } from '../speech.js';
-import { modal, toast, heatmap } from '../ui.js';
 import { rerender } from './rerender.js';
 import { applyTheme } from '../theme.js';
 import { openGuide } from '../guide.js';

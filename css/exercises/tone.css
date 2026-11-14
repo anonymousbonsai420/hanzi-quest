@@ -1,0 +1,4 @@
+/* Exercício · tons */
+.tone-opt { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tone-opt b { font-size: 1.3rem; }
+.tone-opt small { color: var(--muted); }

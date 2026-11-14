@@ -1,6 +1,8 @@
 // Mecânicas de gamificação: XP, níveis, ofensiva, vidas, moedas, missões e conquistas.
 import { state, save } from './state.js';
-import { bus, todayKey, dayDiff, addDays, sample, pick } from './util.js';
+import { bus } from './lib/events.js';
+import { sample, pick } from './lib/random.js';
+import { todayKey, dayDiff, addDays } from './lib/time.js';
 import { UNITS } from './data.js';
 
 export const HEART_MAX = 5;

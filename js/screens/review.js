@@ -1,5 +1,5 @@
 // Tela Revisar: revisões vencidas (repetição espaçada), previsão e domínio do vocabulário.
-import { h } from '../util.js';
+import { h } from '../lib/dom.js';
 import { state } from '../state.js';
 import { ALL_WORDS } from '../data.js';
 import { dueIds, forecast, mastery, MASTERY_LABEL, weakestIds } from '../srs.js';

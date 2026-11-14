@@ -1,5 +1,6 @@
 // Espelho de tons: grava a voz e desenha a curva de altura sobre o contorno ideal.
-import { h, pick, cssVar } from '../util.js';
+import { h, cssVar } from '../lib/dom.js';
+import { pick } from '../lib/random.js';
 import { state, save } from '../state.js';
 import { track, checkAchievements } from '../game.js';
 import { speak, sfx } from '../audio.js';

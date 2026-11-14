@@ -1,0 +1,9 @@
+/* Exercício · pinyin (campo e teclas de tom) */
+.py-field { position: relative; margin: 0 auto 12px; max-width: 420px; }
+.py-input { width: 100%; font: inherit; font-size: 1.4rem; font-weight: 700; padding: 14px 16px; border-radius: 16px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); text-align: center; }
+.py-input:focus { outline: none; border-color: var(--blue); }
+.py-preview { text-align: center; font-size: 1.3rem; font-weight: 800; min-height: 1.8em; margin-top: 6px; }
+.tone-keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.tone-key { display: flex; flex-direction: column; align-items: center; width: 54px; padding: 8px 0; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); font-weight: 900; font-size: 1.2rem; box-shadow: 0 3px 0 var(--line); }
+.tone-key small { font-size: .7rem; color: var(--muted); }
+.tone-key:active { transform: translateY(2px); box-shadow: none; }

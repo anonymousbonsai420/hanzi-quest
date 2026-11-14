@@ -1,9 +1,12 @@
 // Desafio relâmpago: 60 segundos, o máximo de acertos possível.
-import { h, pick, shuffle, sleep, esc } from '../util.js';
+import { h, esc } from '../lib/dom.js';
+import { pick, shuffle } from '../lib/random.js';
+import { sleep } from '../lib/time.js';
+import { modal } from '../ui/modal.js';
+import { confetti } from '../ui/confetti.js';
 import { state, save } from '../state.js';
 import { addXp, addCoins, touchStreak, checkAchievements } from '../game.js';
 import { sfx } from '../audio.js';
-import { modal, confetti } from '../ui.js';
 import { practicePool } from '../builder.js';
 import { speedRival } from '../friend-mode/cloud.js';
 import { mountOverlay, unmountOverlay } from './overlay.js';

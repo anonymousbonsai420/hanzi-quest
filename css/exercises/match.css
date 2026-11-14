@@ -1,0 +1,8 @@
+/* Exercício · pares */
+.pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pair-col { display: flex; flex-direction: column; gap: 10px; }
+.pair { min-height: 64px; padding: 10px; border-radius: 14px; background: var(--surface); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); font-weight: 700; }
+.pair.sel { border-color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, var(--surface)); }
+.pair.matched { border-color: var(--jade); background: var(--ok-bg); opacity: .5; box-shadow: none; }
+.shake { animation: shake .4s; border-color: var(--red) !important; }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }

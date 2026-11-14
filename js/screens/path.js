@@ -1,12 +1,13 @@
 // Tela Trilha: meta diária, missões do dia e o caminho de unidades e lições.
-import { h } from '../util.js';
+import { h } from '../lib/dom.js';
+import { modal } from '../ui/modal.js';
+import { toast } from '../ui/toast.js';
 import { state } from '../state.js';
 import { UNITS, lessonsOf } from '../data.js';
 import { ensureQuests, todayXp, buy, PRICES, nextHeartIn, practicedToday } from '../game.js';
 import { buildLearn, buildConsolidate } from '../builder.js';
 import { pinyinHTML } from '../pinyin.js';
 import { speak } from '../audio.js';
-import { modal, toast } from '../ui.js';
 import { runSession } from '../session/runner.js';
 import { rerender } from './rerender.js';
 

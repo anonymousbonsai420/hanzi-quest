@@ -1,9 +1,11 @@
 // Modo Amigos: formulários de criar conta (com convite), entrar e editar perfil.
-import { h } from '../util.js';
+import { h } from '../lib/dom.js';
+import { modal } from '../ui/modal.js';
+import { toast } from '../ui/toast.js';
+import { confetti } from '../ui/confetti.js';
+import { rerender } from '../screens/rerender.js';
 import { checkAchievements } from '../game.js';
-import { modal, toast, confetti } from '../ui.js';
 import * as cloud from './cloud.js';
-import { rerender } from './helpers.js';
 
 const AVATARS = ['🐼', '🐉', '🦊', '🐯', '🐱', '🐶', '🐸', '🐵', '🦁', '🐨', '🐰', '🦄', '🐧', '🐢', '🐙', '🌸'];
 

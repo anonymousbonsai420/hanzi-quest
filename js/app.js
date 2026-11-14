@@ -1,5 +1,9 @@
 // Ponto de entrada: barra superior, navegação entre telas e eventos globais.
-import { $, h, bus, esc } from './util.js';
+import { $, h, esc } from './lib/dom.js';
+import { bus } from './lib/events.js';
+import { modal } from './ui/modal.js';
+import { toast } from './ui/toast.js';
+import { confetti } from './ui/confetti.js';
 import { state } from './state.js';
 import { checkStreakOnLoad, refreshHearts, ensureQuests, levelInfo, nextHeartIn, HEART_MAX, practicedToday, checkAchievements } from './game.js';
 import { renderPath } from './screens/path.js';
@@ -11,10 +15,8 @@ import { onboarding } from './screens/onboarding.js';
 import { setRerender } from './screens/rerender.js';
 import { applyTheme } from './theme.js';
 import { dueIds } from './srs.js';
-import { toast, modal, confetti } from './ui.js';
 import { sfx } from './audio.js';
 import { renderFriends } from './friend-mode/screen.js';
-import { setSocialRerender } from './friend-mode/helpers.js';
 import { signupModal } from './friend-mode/forms.js';
 import { initCloud, cloudStatus, incomingCount, takeLinkInvite } from './friend-mode/cloud.js';
 
@@ -102,7 +104,6 @@ bus.on('weeklyPrize', ({ pos, prize, xp }) => celebrate(() => {
 async function init() {
   applyTheme();
   setRerender(render);
-  setSocialRerender(render);
   const cloudReady = initCloud().catch(() => {});
   checkStreakOnLoad();
   refreshHearts();

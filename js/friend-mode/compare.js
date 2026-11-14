@@ -1,10 +1,12 @@
 // Modo Amigos: comparação "você × amigo" (estatísticas lado a lado e mapas de atividade).
-import { h } from '../util.js';
+import { h } from '../lib/dom.js';
+import { fmtDate, ago } from '../lib/time.js';
+import { modal } from '../ui/modal.js';
+import { heatmap } from '../ui/heatmap.js';
+import { act } from './actions.js';
 import { state } from '../state.js';
 import { levelInfo } from '../game.js';
-import { modal, heatmap } from '../ui.js';
 import * as cloud from './cloud.js';
-import { act, fmtDate, ago } from './helpers.js';
 
 export function compareModal(p) {
   const body = h('div', { class: 'compare' }, h('p', { class: 'center muted' }, '⏳ Carregando…'));

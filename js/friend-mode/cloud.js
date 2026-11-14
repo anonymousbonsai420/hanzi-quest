@@ -1,7 +1,8 @@
 // Modo Amigos: conta (convite + usuário + senha), sincronização do progresso e chamadas ao servidor (Supabase).
 // Todo o acesso ao banco passa pelas funções de supabase/schema.sql.
 import { state, save } from '../state.js';
-import { bus, todayKey, addDays } from '../util.js';
+import { bus } from '../lib/events.js';
+import { todayKey, addDays } from '../lib/time.js';
 import { mastery } from '../srs.js';
 import { addCoins } from '../game.js';
 import { SUPABASE_URL, SUPABASE_KEY, USER_EMAIL_DOMAIN, SUPABASE_JS } from './config.js';

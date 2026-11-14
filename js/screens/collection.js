@@ -1,12 +1,13 @@
 // Tela Hanzi: coleção de palavras com domínio e o modal de detalhes da palavra.
-import { h, fmtRelDays } from '../util.js';
+import { h } from '../lib/dom.js';
+import { fmtRelDays } from '../lib/time.js';
+import { modal } from '../ui/modal.js';
 import { state } from '../state.js';
 import { UNITS, ALL_WORDS, ALL_SENTENCES } from '../data.js';
 import { mastery, MASTERY_LABEL, isLearned } from '../srs.js';
 import { pinyinHTML } from '../pinyin.js';
 import { speak } from '../audio.js';
 import { writerAvailable, gridBox, animateLoop } from '../writer.js';
-import { modal } from '../ui.js';
 import { runSession } from '../session/runner.js';
 import { rerender } from './rerender.js';
 

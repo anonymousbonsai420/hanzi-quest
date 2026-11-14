@@ -1,5 +1,6 @@
 // Tela cheia das sessões: abre e fecha a sobreposição (e avisa o app para soltar as celebrações).
-import { h, bus } from '../util.js';
+import { h } from '../lib/dom.js';
+import { bus } from '../lib/events.js';
 import { stopSpeaking } from '../audio.js';
 
 export function mountOverlay(cls = '') {

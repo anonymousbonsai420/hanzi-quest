@@ -1,5 +1,5 @@
 // Tela Praticar: treinos livres (tons, fala, escrita, escuta, pinyin, relâmpago).
-import { h } from '../util.js';
+import { h } from '../lib/dom.js';
 import { state } from '../state.js';
 import { buildTones, buildSpeaking, buildWriting, buildPinyin, buildListening } from '../builder.js';
 import { asrSupported, recordSupported } from '../speech.js';

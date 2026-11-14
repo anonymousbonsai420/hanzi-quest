@@ -1,6 +1,6 @@
 // Monta as sequências de exercícios de lições, revisões e treinos.
 import { UNITS, WORDS, ALL_WORDS, TONE_ITEMS } from './data.js';
-import { shuffle, sample, pick } from './util.js';
+import { shuffle, sample, pick } from './lib/random.js';
 import { state } from './state.js';
 import { isLearned, mastery } from './srs.js';
 import { asrSupported, recordSupported } from './speech.js';

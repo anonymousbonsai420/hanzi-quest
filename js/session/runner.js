@@ -1,11 +1,13 @@
 // Executor de sessões de exercícios (lições, revisões e treinos) e a tela de resultados.
-import { h, pick } from '../util.js';
+import { h } from '../lib/dom.js';
+import { pick } from '../lib/random.js';
+import { modal } from '../ui/modal.js';
+import { confetti } from '../ui/confetti.js';
 import { state, save } from '../state.js';
-import { EXERCISES } from '../exercises.js';
+import { EXERCISES } from '../exercises/index.js';
 import { grade, isLearned } from '../srs.js';
 import { addXp, addCoins, loseHeart, touchStreak, track, checkAchievements, buy, PRICES, levelInfo } from '../game.js';
 import { speak, stopSpeaking, sfx } from '../audio.js';
-import { modal, confetti } from '../ui.js';
 import { lessonsOf } from '../data.js';
 import { mountOverlay, unmountOverlay } from './overlay.js';
 

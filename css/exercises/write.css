@@ -1,0 +1,8 @@
+/* Exercício · escrita */
+.write-area { display: flex; justify-content: center; }
+.write-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+.write-dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--line); }
+.write-dots span.cur { background: var(--blue); }
+.write-dots span.done { background: var(--jade); }
+.write-info { text-align: center; margin-top: 10px; }
+.head-row.center { margin-bottom: 12px; }

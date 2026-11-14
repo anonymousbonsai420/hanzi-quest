@@ -58,7 +58,10 @@ Saudações · Pessoas · Números · Família · Comida · Tempo · Lugares · 
 
 ## Estrutura
 
-Um arquivo por responsabilidade, com pastas por área (telas, sessão, modo Amigos), tanto no CSS quanto no JS.
+Um arquivo por responsabilidade, agrupado por domínio, tanto no CSS quanto no JS:
+- `js/lib/`: utilitários genéricos, sem regra do app (DOM, tempo, aleatoriedade, eventos);
+- `js/ui/`: componentes visuais reutilizáveis;
+- uma pasta por área do app (telas, sessão, exercícios, modo Amigos), com o CSS espelhando o JS.
 
 ```
 index.html                Shell; carrega o CSS (na ordem certa) e o Hanzi Writer (CDN)
@@ -67,28 +70,37 @@ sw.js                     Service worker (offline)
 css/
   base.css                Cores do tema claro/escuro, reset, utilitários, cores de tom, tipografia de hanzi
   layout.css              Estrutura do app, abas de navegação e barra superior
-  components.css          Botões, chips, cartões, medidores, modais, toasts, confete
+  components.css          Botões, cartões, medidores, modais, toasts
   screens/                Uma folha por tela: path, review, practice, collection, profile, onboarding
-  session/                session (sobreposição e rodapé), exercises, results, speed, tone-mirror
+  session/                session (sobreposição e rodapé), results, speed, tone-mirror
+  exercises/              blocks (comum) + uma folha por tipo: intro, tone, pinyin, speak, write, build, match
+  writer.css              Quadriculado 田字格 (escrita, palavra nova, modal da palavra)
   guide.css               Guia de estudo
   friend-mode.css         Modo Amigos
 
 js/
   app.js                  Navegação, barra superior, eventos globais, inicialização
+  lib/                    Utilitários por domínio:
+    dom.js                  criar elementos (h), $, variáveis CSS, escape de HTML
+    time.js                 dias 'AAAA-MM-DD', datas relativas e curtas, espera (sleep)
+    random.js               embaralhar e sortear
+    events.js               barramento de eventos (bus)
+  ui/                     Componentes: modal, toast, confetti, heatmap (mapa de atividade), share (compartilhar)
   screens/                Uma tela por arquivo: path, review, practice, collection, profile, onboarding
                           (rerender.js: redesenha a tela atual)
   session/                runner.js (lições, revisões, treinos e resultados), speed.js (Desafio relâmpago),
                           tone-mirror.js (Espelho de tons), overlay.js (tela cheia das sessões)
+  exercises/              index.js (registro tipo → função), blocks.js (peças comuns) e um arquivo por tipo:
+                          intro, meaning, listen, pinyin, speak, write, build, match, tone
   friend-mode/            Modo Amigos:
     screen.js               aba Amigos (perfil, pedidos, placar, adicionar amigo)
     forms.js                criar conta com convite, entrar, editar perfil
     compare.js              você × amigo
     admin.js                painel do administrador (membros e convites)
-    helpers.js              utilitários comuns das telas
+    actions.js              ação de botão com estado ocupado e erro do servidor
     cloud.js                conta, sincronização do progresso e chamadas ao Supabase
     mock.js                 servidor simulado para testes em localhost (?mock)
     config.js               URL e chave pública do Supabase (vazio = modo Amigos desligado)
-  exercises.js            Os tipos de exercício
   builder.js              Monta lições, revisões e treinos
   data.js                 Conteúdo do curso (para adicionar unidades, edite aqui)
   pinyin.js               Pinyin numérico ↔ acentuado, verificação, contornos de tom
@@ -101,8 +113,6 @@ js/
   state.js                Persistência em localStorage (exportar/importar no Perfil)
   theme.js                Tema claro/escuro/automático
   guide.js                Guia de estudo dentro do app
-  ui.js                   Modal, toast, confete, mapa de atividade
-  util.js                 DOM, datas, aleatoriedade, eventos
 
 supabase/schema.sql       Banco do modo Amigos: tabelas, regras de acesso e funções
 supabase/test/            Testes do banco (Postgres embutido)

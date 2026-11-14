@@ -1,10 +1,10 @@
 // Boas-vindas no primeiro acesso: meta diária e checagem de voz, microfone e escrita.
-import { h } from '../util.js';
+import { h } from '../lib/dom.js';
+import { modal } from '../ui/modal.js';
 import { state, save } from '../state.js';
 import { speak, hasChineseVoice } from '../audio.js';
 import { asrSupported } from '../speech.js';
 import { writerAvailable } from '../writer.js';
-import { modal } from '../ui.js';
 
 export async function onboarding() {
   const goal = await modal({

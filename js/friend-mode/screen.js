@@ -1,10 +1,14 @@
 // Modo Amigos: a aba "Amigos" — boas-vindas, perfil, pedidos de amizade, placar e adicionar amigo.
-import { h, todayKey, addDays, dayDiff } from '../util.js';
+import { h } from '../lib/dom.js';
+import { todayKey, addDays, dayDiff, fmtDate, ago } from '../lib/time.js';
+import { modal } from '../ui/modal.js';
+import { toast } from '../ui/toast.js';
+import { share } from '../ui/share.js';
+import { rerender } from '../screens/rerender.js';
+import { act } from './actions.js';
 import { state } from '../state.js';
 import { levelInfo, checkAchievements } from '../game.js';
-import { modal, toast } from '../ui.js';
 import * as cloud from './cloud.js';
-import { rerender, act, share, fmtDate, ago } from './helpers.js';
 import { signupModal, loginModal, profileModal } from './forms.js';
 import { compareModal } from './compare.js';
 import { adminModal } from './admin.js';

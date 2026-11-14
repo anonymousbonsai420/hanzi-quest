@@ -1,7 +1,7 @@
 // Guia de estudo exibido dentro do app (versão resumida do METODOLOGIA.md).
-import { h } from './util.js';
+import { h } from './lib/dom.js';
+import { modal } from './ui/modal.js';
 import { speak } from './audio.js';
-import { modal } from './ui.js';
 
 const ROUTINE = [
   ['5 min', '🔁', 'Revisão espaçada', 'Sempre primeiro. Zere as revisões pendentes antes de aprender algo novo.'],

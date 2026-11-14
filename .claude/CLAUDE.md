@@ -77,11 +77,20 @@ Hotfix: `git switch main && git pull --ff-only && git switch -c hotfix/<name>`, 
 
 - Vanilla JS ES modules in `js/`, one responsibility per file. No frameworks, bundlers or new dependencies
   without a human's approval.
-- **Split by responsibility, never by comment banners.** A screen, a session mode or a feature gets its own file
-  (and its own folder when it has several parts), in both JS and CSS:
+- **Split by responsibility, never by comment banners.** A screen, a session mode, an exercise type or a feature
+  gets its own file (and its own folder when it has several parts), in both JS and CSS, mirrored:
   `js/screens/<screen>.js` ↔ `css/screens/<screen>.css`, `js/session/<mode>.js` ↔ `css/session/<mode>.css`,
-  `js/friend-mode/*` ↔ `css/friend-mode.css`. Shared pieces live in `js/ui.js`/`js/util.js` and
-  `css/base.css`/`css/layout.css`/`css/components.css`. If a file grows a second responsibility, split it.
+  `js/exercises/<type>.js` ↔ `css/exercises/<type>.css`, `js/friend-mode/*` ↔ `css/friend-mode.css`.
+  If a file grows a second responsibility, split it.
+- **Helpers are grouped by domain**, not in a catch-all `utils` file:
+  - `js/lib/` = generic, app-agnostic helpers (`dom.js`, `time.js`, `random.js`, `events.js`);
+  - `js/ui/` = reusable visual components (`modal`, `toast`, `confetti`, `heatmap`, `share`);
+  - helpers that know about a feature stay inside that feature's folder (e.g. `js/friend-mode/actions.js`).
+  Shared styles live in `css/base.css`, `css/layout.css` and `css/components.css`.
+- New exercise type → `js/exercises/<type>.js` exporting `<type>Exercise`, register it in `js/exercises/index.js`,
+  add its styles in `css/exercises/<type>.css`.
+- Check modules with `node --input-type=module --check < file.js` (plain `node --check` does not treat these
+  files as ES modules and misses errors such as duplicate declarations).
 - UI text and code comments in **Brazilian Portuguese**; keep the existing tone.
 - Course content lives in `js/data.js`: pinyin in numeric form (`ni3 hao3`), tone `5` = neutral, `v` = ü,
   dictionary (citation) tones — the checker already accepts sandhi variants.
@@ -105,7 +114,7 @@ Hotfix: `git switch main && git pull --ff-only && git switch -c hotfix/<name>`, 
 
 ## Before opening a PR
 
-- `node --check` on every changed JS file.
+- `node --input-type=module --check < file.js` on every changed JS file.
 - `node server.js`, open the app, exercise what you changed, and check the browser console for errors.
 - Check a phone-width viewport (375 px) and dark mode for UI changes.
 - PR description: what changed, why, and how you tested it. Mention anything you could not test

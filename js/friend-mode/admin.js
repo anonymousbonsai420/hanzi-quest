@@ -1,8 +1,10 @@
 // Modo Amigos: painel do administrador — membros (revogar/reativar, limite) e convites.
-import { h } from '../util.js';
-import { modal, toast } from '../ui.js';
+import { h } from '../lib/dom.js';
+import { fmtDate, ago } from '../lib/time.js';
+import { modal } from '../ui/modal.js';
+import { toast } from '../ui/toast.js';
+import { share } from '../ui/share.js';
 import * as cloud from './cloud.js';
-import { share, fmtDate, ago } from './helpers.js';
 
 export function adminModal() {
   const body = h('div', { class: 'admin' }, h('p', { class: 'center muted' }, '⏳ Carregando…'));

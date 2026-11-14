@@ -1,6 +1,7 @@
 // Guia de estudo exibido dentro do app (versão resumida do METODOLOGIA.md).
 import { h } from './util.js';
 import { speak } from './audio.js';
+import { modal } from './ui.js';
 
 const ROUTINE = [
   ['5 min', '🔁', 'Revisão espaçada', 'Sempre primeiro. Zere as revisões pendentes antes de aprender algo novo.'],
@@ -66,4 +67,8 @@ export function guideBody() {
       h('li', {}, 'Desligue o pinyin (Perfil → Configurações) assim que reconhecer os caracteres.'),
       h('li', {}, 'Grave sua voz uma vez por mês lendo o mesmo texto e compare a evolução.'),
       h('li', {}, 'A partir do 2º mês, converse 30 min por semana com um nativo (tutor ou intercâmbio).')));
+}
+
+export function openGuide() {
+  modal({ title: '📖 Guia de estudo', body: guideBody(), className: 'guide-modal', actions: [{ label: 'Bora estudar!', value: true }] });
 }

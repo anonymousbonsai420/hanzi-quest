@@ -1,0 +1,42 @@
+/* Layout: estrutura do app, barra de navegação (abas) e barra superior */
+#app { min-height: 100vh; }
+#main { max-width: 680px; margin: 0 auto; padding: 0 16px calc(96px + env(safe-area-inset-bottom)); }
+#topbar {
+  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 6px;
+  padding: 10px 0; background: var(--bg); border-bottom: 2px solid var(--line); margin-bottom: 16px;
+}
+.tb-spacer { flex: 1; }
+.tb-item { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; padding: 6px 10px; border-radius: 12px; }
+.tb-item:hover { background: var(--surface-2); }
+.tb-item.streak { color: var(--orange); }
+.tb-item.streak.cold { color: var(--muted); filter: grayscale(.8); }
+.tb-item.hearts { color: var(--red); }
+.lv-badge { display: inline-grid; place-items: center; min-width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: #3b2500; font-weight: 900; font-size: .9rem; }
+.tb-xp { color: var(--muted); font-size: .9rem; }
+
+#tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; display: flex; justify-content: space-around;
+  background: var(--surface); border-top: 2px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+#tabbar .brand { display: none; }
+.tab { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 10px; border-radius: 14px; font-weight: 800; font-size: .72rem; color: var(--muted); min-width: 60px; }
+.tab-icon { font-size: 1.45rem; line-height: 1; filter: grayscale(.6); transition: transform .15s; }
+.tab.active { color: var(--red); background: color-mix(in srgb, var(--red) 10%, transparent); }
+.tab.active .tab-icon { filter: none; transform: scale(1.1); }
+.tab-badge { position: absolute; top: 2px; right: 8px; background: var(--red); color: #fff; border-radius: 10px; font-size: .65rem; padding: 1px 6px; }
+
+@media (max-width: 420px) { .tab { min-width: 0; flex: 1; padding: 6px 2px; font-size: .66rem; } .tab-badge { right: 2px; } }
+
+@media (min-width: 960px) {
+  #app { display: grid; grid-template-columns: 240px 1fr; }
+  #tabbar {
+    position: sticky; top: 0; height: 100vh; flex-direction: column; justify-content: flex-start; gap: 6px;
+    border-top: none; border-right: 2px solid var(--line); padding: 24px 14px;
+  }
+  #tabbar .brand { display: flex; flex-direction: column; padding: 0 12px 20px; }
+  .brand-zh { font-family: var(--hz-font); font-size: 1.9rem; font-weight: 700; color: var(--red); }
+  .brand-pt { font-weight: 900; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-size: .75rem; }
+  .tab { flex-direction: row; gap: 14px; font-size: 1rem; padding: 12px 14px; }
+  .tab-badge { position: static; margin-left: auto; }
+  #main { padding-bottom: 48px; width: 100%; }
+}

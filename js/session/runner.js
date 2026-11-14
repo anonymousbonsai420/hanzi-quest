@@ -1,16 +1,13 @@
-// Executor de sessões (lições, revisões, treinos), Desafio relâmpago e Espelho de tons.
-import { h, pick, shuffle, sleep, cssVar, bus, esc } from './util.js';
-import { state, save } from './state.js';
-import { EXERCISES } from './exercises.js';
-import { grade, isLearned } from './srs.js';
-import { addXp, addCoins, loseHeart, touchStreak, track, checkAchievements, buy, PRICES, levelInfo } from './game.js';
-import { speak, stopSpeaking, sfx } from './audio.js';
-import { modal, confetti } from './ui.js';
-import { lessonsOf, TONE_ITEMS } from './data.js';
-import { practicePool } from './builder.js';
-import { pinyinHTML, markSyllable, TONE_NAMES, toneSVG } from './pinyin.js';
-import { recordPitch, contour, classify, drawContours } from './pitch.js';
-import { speedRival } from './cloud.js';
+// Executor de sessões de exercícios (lições, revisões e treinos) e a tela de resultados.
+import { h, pick } from '../util.js';
+import { state, save } from '../state.js';
+import { EXERCISES } from '../exercises.js';
+import { grade, isLearned } from '../srs.js';
+import { addXp, addCoins, loseHeart, touchStreak, track, checkAchievements, buy, PRICES, levelInfo } from '../game.js';
+import { speak, stopSpeaking, sfx } from '../audio.js';
+import { modal, confetti } from '../ui.js';
+import { lessonsOf } from '../data.js';
+import { mountOverlay, unmountOverlay } from './overlay.js';
 
 const PRAISE = ['Excelente!', 'Muito bem!', '太好了！Tài hǎo le!', 'Perfeito!', 'Isso aí!', '很好！Hěn hǎo!', 'Mandou bem!'];
 const ENCOURAGE = ['Resposta correta:', 'Quase! A resposta era:', 'Não foi dessa vez:'];
@@ -20,23 +17,6 @@ function idsOf(ex) {
   if (ex.type === 'match') return ex.words.map((w) => w.id);
   if (ex.words) return ex.words;
   return [];
-}
-
-function mountOverlay(cls = '') {
-  const root = document.getElementById('overlay');
-  const el = h('div', { class: `session ${cls}` });
-  root.replaceChildren(el);
-  root.classList.add('open');
-  document.body.classList.add('in-session');
-  return el;
-}
-function unmountOverlay() {
-  const root = document.getElementById('overlay');
-  root.classList.remove('open');
-  root.replaceChildren();
-  document.body.classList.remove('in-session');
-  stopSpeaking();
-  bus.emit('overlayClosed');
 }
 
 /**
@@ -277,151 +257,4 @@ async function showResults(r) {
 }
 function tile(icon, value, label, color) {
   return h('div', { class: `res-tile ${color}` }, h('div', { class: 'rt-label' }, label), h('div', { class: 'rt-val' }, icon, ' ', value));
-}
-
-// ---------------------------------------------------------------------------
-// Desafio relâmpago: 60 segundos, o máximo de acertos possível.
-export async function runSpeed() {
-  const pool = practicePool(6);
-  const el = mountOverlay('speed');
-  const DURATION = 60e3;
-  let score = 0, streak = 0, end = Date.now() + DURATION, running = true;
-  const timeFill = h('div', { class: 'bar-fill timer' });
-  const scoreEl = h('div', { class: 'speed-score' }, '0');
-  const stage = h('div', { class: 'stage speed-stage' });
-  const close = h('button', { class: 'icon-btn close' }, '✕');
-  el.append(h('div', { class: 's-top' }, close, h('div', { class: 'bar' }, timeFill), scoreEl), h('div', { class: 'stage-wrap' }, stage));
-  let quit = false;
-  close.onclick = () => { quit = true; running = false; };
-
-  const tick = () => {
-    const left = end - Date.now();
-    timeFill.style.width = `${Math.max(0, left / DURATION) * 100}%`;
-    timeFill.classList.toggle('danger', left < 10e3);
-    if (left <= 0) running = false;
-    if (running) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-
-  let last = null;
-  while (running) {
-    let w;
-    do { w = pick(pool); } while (w === last && pool.length > 1);
-    last = w;
-    const reverse = Math.random() < 0.35;
-    const others = shuffle(pool.filter((o) => o !== w && o.m !== w.m)).slice(0, 3);
-    const opts = shuffle([w, ...others]);
-    stage.replaceChildren(
-      h('div', { class: 'speed-q' }, reverse ? h('div', { class: 'meaning big' }, w.m) : h('div', { class: 'hz xl' }, w.h)),
-      h('div', { class: `opts ${reverse ? 'grid' : ''}` }, opts.map((o, i) => h('button', { class: 'opt', 'data-i': i }, reverse ? h('span', { class: 'hz md' }, o.h) : o.m))));
-    const chosen = await new Promise((res) => {
-      stage.querySelectorAll('.opt').forEach((b) => (b.onclick = () => res(+b.dataset.i)));
-      const k = (e) => { const n = +e.key; if (n >= 1 && n <= 4) { document.removeEventListener('keydown', k); res(n - 1); } };
-      document.addEventListener('keydown', k);
-      const poll = setInterval(() => { if (!running) { clearInterval(poll); document.removeEventListener('keydown', k); res(-1); } }, 100);
-    });
-    if (chosen < 0) break;
-    const btns = stage.querySelectorAll('.opt');
-    const ok = opts[chosen] === w;
-    btns[opts.indexOf(w)].classList.add('right');
-    if (!ok) { btns[chosen].classList.add('wrong'); sfx.wrong(); streak = 0; end -= 3000; }
-    else { score++; streak++; sfx.correct(); if (streak % 5 === 0) end += 3000; }
-    scoreEl.textContent = score;
-    scoreEl.classList.add('bump'); setTimeout(() => scoreEl.classList.remove('bump'), 200);
-    await sleep(ok ? 250 : 700);
-  }
-  unmountOverlay();
-  if (quit) return null;
-  const best = score > state.stats.bestSpeed;
-  state.stats.bestSpeed = Math.max(state.stats.bestSpeed, score);
-  const xp = Math.max(2, score);
-  addXp(xp);
-  addCoins(Math.floor(score / 3));
-  touchStreak();
-  save();
-  checkAchievements();
-  sfx.complete();
-  if (best && score > 0) confetti();
-  const rival = speedRival();
-  const rivalLine = !rival ? ''
-    : score > rival.speed_record ? `<p class="perfect">${esc(rival.avatar)} Você superou o recorde de ${esc(rival.display_name)} (${rival.speed_record})!</p>`
-    : `<p class="muted">${esc(rival.avatar)} Recorde da turma: ${esc(rival.display_name)} · ${rival.speed_record}</p>`;
-  await modal({
-    title: '⚡ Tempo esgotado!',
-    body: `<div class="center"><div class="big-num">${score}</div><p>acertos em 60 segundos</p>${best && score > 0 ? '<p class="perfect">🏆 Novo recorde!</p>' : `<p class="muted">Recorde: ${state.stats.bestSpeed}</p>`}${rivalLine}<p>+${xp} XP · +${Math.floor(score / 3)} 💰</p><p class="muted small">Erros custam 3 s; cada 5 acertos seguidos dão +3 s.</p></div>`,
-    actions: [{ label: 'Continuar', value: true }],
-  });
-  return score;
-}
-
-// ---------------------------------------------------------------------------
-// Espelho de tons: grava a voz e desenha a curva de altura sobre o contorno ideal.
-export async function runToneMirror() {
-  const el = mountOverlay('mirror');
-  let filter = 0;
-  const items = () => (filter ? TONE_ITEMS.filter((t) => t.tone === filter) : TONE_ITEMS);
-  let it = pick(TONE_ITEMS);
-  const close = h('button', { class: 'icon-btn close' }, '✕');
-  const head = h('div', { class: 'mirror-head' });
-  const canvas = h('canvas', { class: 'mirror-canvas' });
-  const verdict = h('div', { class: 'mirror-verdict muted' }, 'Ouça o modelo e depois grave a sua voz.');
-  const mic = h('button', { class: 'mic-btn' }, h('span', {}, '🎤'));
-  const filterRow = h('div', { class: 'chip-row' }, [0, 1, 2, 3, 4].map((t) => h('button', { class: `chip ${t === 0 ? 'active' : ''}`, 'data-t': t }, t ? `${t}º tom` : 'Todos')));
-  el.append(
-    h('div', { class: 's-top' }, close, h('div', { class: 's-title' }, '📈 Espelho de tons')),
-    h('div', { class: 'stage-wrap' }, h('div', { class: 'stage' },
-      filterRow, head,
-      h('div', { class: 'mirror-legend small' }, h('span', { class: 'lg target' }, 'modelo'), h('span', { class: 'lg user' }, 'sua voz')),
-      canvas, verdict,
-      h('div', { class: 'mirror-actions' },
-        h('button', { class: 'btn ghost', onClick: () => speak(it.h) }, '🔊 Ouvir'), mic,
-        h('button', { class: 'btn ghost', onClick: () => { next(); } }, 'Próximo ➜')),
-      h('p', { class: 'muted small center' }, 'Dica: fale a sílaba de forma longa e clara, num lugar silencioso. A comparação é pela FORMA da curva, não pela altura absoluta da sua voz.'))));
-  const colors = () => ({ grid: cssVar('--line'), target: cssVar(`--t${it.tone}`), user: cssVar('--ink') });
-  const renderHead = () => {
-    head.innerHTML = `<div class="hz xxl">${it.h}</div><div class="py big t${it.tone}">${markSyllable(it.p)}</div><div class="muted">${TONE_NAMES[it.tone]}</div>`;
-    verdict.textContent = 'Ouça o modelo e depois grave a sua voz.';
-    verdict.className = 'mirror-verdict muted';
-    requestAnimationFrame(() => drawContours(canvas, it.tone, null, colors()));
-  };
-  const next = () => { const list = items(); let n; do { n = pick(list); } while (n === it && list.length > 1); it = n; renderHead(); speak(it.h); };
-  filterRow.querySelectorAll('.chip').forEach((c) => (c.onclick = () => {
-    filter = +c.dataset.t;
-    filterRow.querySelectorAll('.chip').forEach((x) => x.classList.toggle('active', x === c));
-    next();
-  }));
-  renderHead();
-  setTimeout(() => speak(it.h), 300);
-  let busy = false;
-  mic.onclick = async () => {
-    if (busy) return;
-    busy = true;
-    mic.classList.add('on');
-    verdict.textContent = 'Gravando… fale agora!';
-    try {
-      const pts = await recordPitch(1700, (p) => {
-        const c = contour(p);
-        if (c) drawContours(canvas, it.tone, c, colors());
-      });
-      const c = contour(pts);
-      drawContours(canvas, it.tone, c, colors());
-      const guess = classify(c);
-      if (!guess) { verdict.textContent = 'Não captei sua voz. Fale mais alto e mais longo.'; verdict.className = 'mirror-verdict'; }
-      else if (guess === it.tone) {
-        verdict.innerHTML = `✅ Isso! Soou como o <b>${guess}º tom</b>.`;
-        verdict.className = 'mirror-verdict good';
-        sfx.correct();
-        state.stats.toneOk++; track('tone'); save(); checkAchievements();
-      } else {
-        verdict.innerHTML = `🤔 Soou mais como o <b>${guess}º tom</b>. Tente acompanhar a linha tracejada.`;
-        verdict.className = 'mirror-verdict bad';
-      }
-    } catch {
-      verdict.textContent = 'Não foi possível acessar o microfone.';
-    }
-    mic.classList.remove('on');
-    busy = false;
-  };
-  await new Promise((r) => (close.onclick = r));
-  unmountOverlay();
 }

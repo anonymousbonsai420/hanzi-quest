@@ -77,11 +77,17 @@ Hotfix: `git switch main && git pull --ff-only && git switch -c hotfix/<name>`, 
 
 - Vanilla JS ES modules in `js/`, one responsibility per file. No frameworks, bundlers or new dependencies
   without a human's approval.
+- **Split by responsibility, never by comment banners.** A screen, a session mode or a feature gets its own file
+  (and its own folder when it has several parts), in both JS and CSS:
+  `js/screens/<screen>.js` ↔ `css/screens/<screen>.css`, `js/session/<mode>.js` ↔ `css/session/<mode>.css`,
+  `js/friend-mode/*` ↔ `css/friend-mode.css`. Shared pieces live in `js/ui.js`/`js/util.js` and
+  `css/base.css`/`css/layout.css`/`css/components.css`. If a file grows a second responsibility, split it.
 - UI text and code comments in **Brazilian Portuguese**; keep the existing tone.
 - Course content lives in `js/data.js`: pinyin in numeric form (`ni3 hao3`), tone `5` = neutral, `v` = ü,
   dictionary (citation) tones — the checker already accepts sandhi variants.
-- Colors only through the CSS variables in `css/styles.css` (light and dark themes must both work).
-- New JS/CSS file → add it to `SHELL` in `sw.js` and bump `CACHE` (`hanziquest-vN`).
+- Colors only through the CSS variables defined in `css/base.css` (light and dark themes must both work).
+- New JS/CSS file → add it to `SHELL` in `sw.js` and bump `CACHE` (`hanziquest-vN`). New CSS file → also add its
+  `<link>` in `index.html`, keeping the order base → layout → components → screens → session → features.
 - Never change the `localStorage` key or the shape of saved state without a migration in `js/state.js`.
 
 ## Friends mode (Supabase)
@@ -91,9 +97,9 @@ Hotfix: `git switch main && git pull --ff-only && git switch -c hotfix/<name>`, 
 - Access model: RLS on and **no table privileges** for `anon`/`authenticated`; the app only calls `security definer`
   functions with `set search_path = ''`, and each one starts with `public.assert_member()` (or `assert_admin()`).
   Never add table policies or grants that bypass this, and never weaken the invite/member-cap checks.
-- New RPC → grant it explicitly at the end of the schema, mirror it in `js/cloud-mock.js`, and add cases to
+- New RPC → grant it explicitly at the end of the schema, mirror it in `js/friend-mode/mock.js`, and add cases to
   `supabase/test/schema.test.mjs` (run it before opening the PR).
-- Only the public (anon/publishable) key may appear in `js/config.js`. Never commit a `service_role`/secret key.
+- Only the public (anon/publishable) key may appear in `js/friend-mode/config.js`. Never commit a `service_role`/secret key.
 - User-provided text (display names, avatars) must go through `h()` text nodes or `esc()` before any `innerHTML`.
 - Test the UI with `http://localhost:5173/?mock` (simulated server, admin invite `HQ-TEST-ADMN`).
 

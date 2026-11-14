@@ -1,0 +1,15 @@
+/* Resultados da sessão */
+.results { display: flex; align-items: center; justify-content: center; }
+.results-inner { max-width: 520px; width: 100%; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; overflow-y: auto; max-height: 100%; }
+.res-mascot { font-size: 5rem; animation: bob 1.6s infinite; }
+.results h1 { font-size: 2rem; font-weight: 900; color: var(--gold-d); }
+.perfect { color: var(--purple); font-weight: 900; }
+.res-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin: 10px 0; }
+@media (min-width: 520px) { .res-tiles { grid-template-columns: repeat(4, 1fr); } }
+.res-tile { --c: var(--gold); border: 2px solid var(--c); border-radius: 16px; overflow: hidden; }
+.res-tile.jade { --c: var(--jade); } .res-tile.blue { --c: var(--blue); } .res-tile.red { --c: var(--red); }
+.rt-label { background: var(--c); color: #fff; font-weight: 900; font-size: .75rem; text-transform: uppercase; padding: 4px; }
+.rt-val { font-weight: 900; font-size: 1.3rem; padding: 10px 4px; }
+.res-coins { font-weight: 800; color: var(--gold-d); }
+.res-streak { display: flex; align-items: center; gap: 12px; text-align: left; background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; width: 100%; margin-bottom: 8px; }
+.flame { font-size: 2.4rem; animation: pulse 1.2s infinite; }

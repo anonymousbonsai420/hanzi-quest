@@ -58,31 +58,55 @@ Saudações · Pessoas · Números · Família · Comida · Tempo · Lugares · 
 
 ## Estrutura
 
+Um arquivo por responsabilidade, com pastas por área (telas, sessão, modo Amigos), tanto no CSS quanto no JS.
+
 ```
-index.html            Shell + carregamento do Hanzi Writer (CDN)
-css/styles.css        Tema claro/escuro, layout mobile e desktop
-js/app.js             Navegação, barra superior, eventos globais
-js/screens.js         Telas: Trilha, Revisar, Praticar, Hanzi, Perfil, onboarding
-js/session.js         Executor de sessões, resultados, Desafio relâmpago, Espelho de tons
-js/exercises.js       Os tipos de exercício
-js/builder.js         Monta lições, revisões e treinos
-js/data.js            Conteúdo do curso (para adicionar unidades, edite aqui)
-js/pinyin.js          Pinyin numérico ↔ acentuado, verificação, contornos de tom
-js/speech.js          Reconhecimento de fala + pontuação por alinhamento
-js/pitch.js           Detecção de altura da voz
-js/audio.js           Voz (TTS zh-CN) e efeitos sonoros
-js/srs.js             Repetição espaçada
-js/game.js            XP, níveis, ofensiva, vidas, loja, missões, conquistas
-js/state.js           Persistência em localStorage (exportar/importar no Perfil)
-js/guide.js           Guia de estudo dentro do app
-js/social.js          Tela Amigos: placar, pedidos de amizade, comparação, painel do administrador
-js/cloud.js           Conta, sincronização do progresso e chamadas ao Supabase
-js/cloud-mock.js      Servidor simulado para testar o modo Amigos em localhost (?mock)
-js/config.js          URL e chave pública do Supabase (vazio = modo Amigos desligado)
-supabase/schema.sql   Banco do modo Amigos: tabelas, regras de acesso e funções
-supabase/test/        Testes do banco (Postgres embutido)
-sw.js                 Service worker (offline)
-METODOLOGIA.md        Métodos e processos de aprendizado sugeridos
+index.html                Shell; carrega o CSS (na ordem certa) e o Hanzi Writer (CDN)
+sw.js                     Service worker (offline)
+
+css/
+  base.css                Cores do tema claro/escuro, reset, utilitários, cores de tom, tipografia de hanzi
+  layout.css              Estrutura do app, abas de navegação e barra superior
+  components.css          Botões, chips, cartões, medidores, modais, toasts, confete
+  screens/                Uma folha por tela: path, review, practice, collection, profile, onboarding
+  session/                session (sobreposição e rodapé), exercises, results, speed, tone-mirror
+  guide.css               Guia de estudo
+  friend-mode.css         Modo Amigos
+
+js/
+  app.js                  Navegação, barra superior, eventos globais, inicialização
+  screens/                Uma tela por arquivo: path, review, practice, collection, profile, onboarding
+                          (rerender.js: redesenha a tela atual)
+  session/                runner.js (lições, revisões, treinos e resultados), speed.js (Desafio relâmpago),
+                          tone-mirror.js (Espelho de tons), overlay.js (tela cheia das sessões)
+  friend-mode/            Modo Amigos:
+    screen.js               aba Amigos (perfil, pedidos, placar, adicionar amigo)
+    forms.js                criar conta com convite, entrar, editar perfil
+    compare.js              você × amigo
+    admin.js                painel do administrador (membros e convites)
+    helpers.js              utilitários comuns das telas
+    cloud.js                conta, sincronização do progresso e chamadas ao Supabase
+    mock.js                 servidor simulado para testes em localhost (?mock)
+    config.js               URL e chave pública do Supabase (vazio = modo Amigos desligado)
+  exercises.js            Os tipos de exercício
+  builder.js              Monta lições, revisões e treinos
+  data.js                 Conteúdo do curso (para adicionar unidades, edite aqui)
+  pinyin.js               Pinyin numérico ↔ acentuado, verificação, contornos de tom
+  speech.js               Reconhecimento de fala + pontuação por alinhamento
+  pitch.js                Detecção de altura da voz
+  audio.js                Voz (TTS zh-CN) e efeitos sonoros
+  writer.js               Escrita de caracteres (Hanzi Writer + quadriculado 田字格)
+  srs.js                  Repetição espaçada
+  game.js                 XP, níveis, ofensiva, vidas, loja, missões, conquistas
+  state.js                Persistência em localStorage (exportar/importar no Perfil)
+  theme.js                Tema claro/escuro/automático
+  guide.js                Guia de estudo dentro do app
+  ui.js                   Modal, toast, confete, mapa de atividade
+  util.js                 DOM, datas, aleatoriedade, eventos
+
+supabase/schema.sql       Banco do modo Amigos: tabelas, regras de acesso e funções
+supabase/test/            Testes do banco (Postgres embutido)
+METODOLOGIA.md            Métodos e processos de aprendizado sugeridos
 ```
 
 ## Requisitos e limitações
@@ -103,7 +127,7 @@ O modo Amigos usa um projeto **gratuito** do [Supabase](https://supabase.com) (b
    - **Email**: deixe ligado e **desative "Confirm email"**. O login é por nome de usuário; o app cria um e-mail interno `usuario@hanzi-quest.invalid`, e nenhum e-mail é enviado.
    - **Allow new users to sign up**: deixe ligado. Quem barra cadastros sem convite é o banco.
    - **Anonymous sign-ins**: deixe desligado (é o padrão).
-4. **Project Settings → API Keys**: copie a **Project URL** e a chave pública (**publishable** / **anon**) para [`js/config.js`](js/config.js). Nunca use a chave `service_role` / `secret`.
+4. **Project Settings → API Keys**: copie a **Project URL** e a chave pública (**publishable** / **anon**) para [`js/friend-mode/config.js`](js/friend-mode/config.js). Nunca use a chave `service_role` / `secret`.
 5. Publique, abra o app → **Amigos** → **Tenho um convite** → use o convite de administrador e crie sua conta.
 6. No painel 🛡️ da aba Amigos: gere um convite por amigo e envie o link (`…/hanzi-quest/?invite=HQ-XXXX-XXXX`). Quem entra pelo seu convite já vira seu amigo.
 

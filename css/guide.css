@@ -1,0 +1,19 @@
+/* Guia de estudo */
+.guide-modal { max-width: 640px; }
+
+.guide h3 { margin-top: 22px; font-size: 1.1rem; }
+.routine { display: flex; flex-direction: column; gap: 8px; }
+.routine-step { display: grid; grid-template-columns: 62px 36px 1fr; align-items: center; gap: 8px; background: var(--surface-2); padding: 10px; border-radius: 12px; }
+.rs-time { font-weight: 900; color: var(--red); font-size: .85rem; }
+.rs-icon { font-size: 1.5rem; }
+.pillars { display: grid; gap: 8px; }
+.pillar { display: flex; gap: 12px; padding: 10px; border: 2px solid var(--line); border-radius: 12px; }
+.pillar p { margin: 2px 0 0; color: var(--muted); }
+.pillar-icon { font-size: 1.6rem; }
+.tones-demo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tone-demo { display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); }
+.tone-demo small { color: var(--muted); }
+.tech-list { padding-left: 18px; }
+.tech-list li { margin-bottom: 6px; }
+.roadmap { display: flex; flex-direction: column; gap: 6px; border-left: 4px solid var(--gold); padding-left: 12px; }
+.rm-step { display: flex; flex-direction: column; }

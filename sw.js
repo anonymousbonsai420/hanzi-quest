@@ -1,13 +1,22 @@
 // Service worker: permite usar o app offline.
 // Arquivos do app: rede primeiro (sempre atualizado), cache como reserva.
 // CDN (Hanzi Writer, dados de traços, fontes): cache primeiro.
-const CACHE = 'hanziquest-v2';
+const CACHE = 'hanziquest-v3';
 const SHELL = [
-  './', 'index.html', 'css/styles.css', 'manifest.webmanifest', 'icon.svg',
-  'js/app.js', 'js/util.js', 'js/data.js', 'js/pinyin.js', 'js/state.js', 'js/srs.js', 'js/game.js',
-  'js/audio.js', 'js/speech.js', 'js/pitch.js', 'js/writer.js', 'js/ui.js', 'js/exercises.js',
-  'js/builder.js', 'js/session.js', 'js/screens.js', 'js/guide.js',
-  'js/config.js', 'js/cloud.js', 'js/social.js',
+  './', 'index.html', 'manifest.webmanifest', 'icon.svg',
+  'css/base.css', 'css/components.css', 'css/friend-mode.css', 'css/guide.css',
+  'css/layout.css', 'css/screens/collection.css', 'css/screens/onboarding.css', 'css/screens/path.css',
+  'css/screens/practice.css', 'css/screens/profile.css', 'css/screens/review.css', 'css/session/exercises.css',
+  'css/session/results.css', 'css/session/session.css', 'css/session/speed.css', 'css/session/tone-mirror.css',
+  'js/app.js', 'js/audio.js', 'js/builder.js', 'js/data.js',
+  'js/exercises.js', 'js/friend-mode/admin.js', 'js/friend-mode/cloud.js', 'js/friend-mode/compare.js',
+  'js/friend-mode/config.js', 'js/friend-mode/forms.js', 'js/friend-mode/helpers.js', 'js/friend-mode/screen.js',
+  'js/game.js', 'js/guide.js', 'js/pinyin.js', 'js/pitch.js',
+  'js/screens/collection.js', 'js/screens/onboarding.js', 'js/screens/path.js', 'js/screens/practice.js',
+  'js/screens/profile.js', 'js/screens/rerender.js', 'js/screens/review.js', 'js/session/overlay.js',
+  'js/session/runner.js', 'js/session/speed.js', 'js/session/tone-mirror.js', 'js/speech.js',
+  'js/srs.js', 'js/state.js', 'js/theme.js', 'js/ui.js',
+  'js/util.js', 'js/writer.js',
 ];
 
 self.addEventListener('install', (e) => {

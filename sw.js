@@ -1,12 +1,13 @@
 // Service worker: permite usar o app offline.
 // Arquivos do app: rede primeiro (sempre atualizado), cache como reserva.
 // CDN (Hanzi Writer, dados de traços, fontes): cache primeiro.
-const CACHE = 'hanziquest-v1';
+const CACHE = 'hanziquest-v2';
 const SHELL = [
   './', 'index.html', 'css/styles.css', 'manifest.webmanifest', 'icon.svg',
   'js/app.js', 'js/util.js', 'js/data.js', 'js/pinyin.js', 'js/state.js', 'js/srs.js', 'js/game.js',
   'js/audio.js', 'js/speech.js', 'js/pitch.js', 'js/writer.js', 'js/ui.js', 'js/exercises.js',
   'js/builder.js', 'js/session.js', 'js/screens.js', 'js/guide.js',
+  'js/config.js', 'js/cloud.js', 'js/social.js',
 ];
 
 self.addEventListener('install', (e) => {

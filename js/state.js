@@ -27,13 +27,17 @@ const DEFAULTS = () => ({
   settings: {
     ttsRate: 0.8, sound: true, showPinyin: true, speaking: true, writing: true, theme: 'auto',
   },
+  cloud: {           // modo Amigos (cache do servidor; o progresso continua sendo o local)
+    username: null, profile: null, overview: null, overviewAt: 0, seen: null,
+    dirty: false, lastSync: 0, rewardedWeek: null, weeklyWins: 0, friends: 0, speedTop: false,
+  },
 });
 
 function isObj(v) { return v && typeof v === 'object' && !Array.isArray(v); }
 function merge(def, obj) {
   if (!isObj(obj)) return def;
   const out = { ...def, ...obj };
-  for (const k of ['stats', 'settings']) out[k] = { ...def[k], ...(obj[k] || {}) };
+  for (const k of ['stats', 'settings', 'cloud']) out[k] = { ...def[k], ...(obj[k] || {}) };
   return out;
 }
 
@@ -62,6 +66,7 @@ export function exportData() {
 
 export function importData(json) {
   const obj = JSON.parse(json);
-  Object.assign(state, merge(DEFAULTS(), obj));
+  const cloud = state.cloud; // a conta deste aparelho não vem no arquivo importado
+  Object.assign(state, merge(DEFAULTS(), obj), { cloud });
   save();
 }

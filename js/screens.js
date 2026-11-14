@@ -14,7 +14,7 @@ import { pinyinHTML } from './pinyin.js';
 import { speak, voiceName, hasChineseVoice, ttsSupported } from './audio.js';
 import { asrSupported, recordSupported } from './speech.js';
 import { writerAvailable, gridBox, animateLoop } from './writer.js';
-import { modal, toast } from './ui.js';
+import { modal, toast, heatmap } from './ui.js';
 import { guideBody } from './guide.js';
 
 let rerender = () => {};
@@ -260,7 +260,7 @@ export function renderProfile(view) {
       stat('🖌️', state.stats.writeOk, 'Escritas certas'),
       stat('🎵', state.stats.toneOk, 'Tons certos'),
       stat('⏱️', `${state.stats.minutes}m`, 'Tempo de estudo')),
-    h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'Atividade (12 semanas)'), heatmap()),
+    h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'Atividade (12 semanas)'), heatmap(state.days)),
     h('div', { class: 'card' },
       h('div', { class: 'card-title' }, `Conquistas · ${Object.keys(state.achievements).length}/${ACHIEVEMENTS.length}`),
       h('div', { class: 'ach-grid' }, ACHIEVEMENTS.map((a) => h('div', { class: `ach ${state.achievements[a.id] ? 'got' : ''}`, title: a.desc },
@@ -269,21 +269,6 @@ export function renderProfile(view) {
     settingsCard());
 }
 const stat = (icon, v, label) => h('div', { class: 'stat' }, h('div', { class: 'stat-v' }, icon, ' ', v), h('div', { class: 'stat-l' }, label));
-
-function heatmap() {
-  const weeks = 12;
-  const today = todayKey();
-  const dow = (new Date().getDay() + 6) % 7; // segunda = 0
-  const start = addDays(today, -(weeks * 7 - 1) - (6 - dow));
-  const cells = [];
-  for (let i = 0; i < weeks * 7; i++) {
-    const k = addDays(start, i);
-    const xp = state.days[k] || 0;
-    const lvl = xp === 0 ? 0 : xp < 10 ? 1 : xp < 25 ? 2 : xp < 50 ? 3 : 4;
-    cells.push(h('i', { class: `hm l${lvl} ${k > today ? 'future' : ''}`, title: `${k}: ${xp} XP` }));
-  }
-  return h('div', { class: 'heatmap' }, cells);
-}
 
 function shopCard() {
   const item = (icon, name, desc, price, key, disabled) => h('div', { class: 'shop-item' },

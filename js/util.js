@@ -52,6 +52,9 @@ export const bus = {
   emit(evt, data) { (this.l[evt] || []).forEach((f) => f(data)); },
 };
 
+/** Escapa texto para uso dentro de HTML (nomes vindos de outros usuários, por exemplo). */
+export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
 export function cssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }

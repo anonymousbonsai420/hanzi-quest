@@ -1,5 +1,5 @@
 // Executor de sessões (lições, revisões, treinos), Desafio relâmpago e Espelho de tons.
-import { h, pick, shuffle, sleep, cssVar, bus } from './util.js';
+import { h, pick, shuffle, sleep, cssVar, bus, esc } from './util.js';
 import { state, save } from './state.js';
 import { EXERCISES } from './exercises.js';
 import { grade, isLearned } from './srs.js';
@@ -10,6 +10,7 @@ import { lessonsOf, TONE_ITEMS } from './data.js';
 import { practicePool } from './builder.js';
 import { pinyinHTML, markSyllable, TONE_NAMES, toneSVG } from './pinyin.js';
 import { recordPitch, contour, classify, drawContours } from './pitch.js';
+import { speedRival } from './cloud.js';
 
 const PRAISE = ['Excelente!', 'Muito bem!', '太好了！Tài hǎo le!', 'Perfeito!', 'Isso aí!', '很好！Hěn hǎo!', 'Mandou bem!'];
 const ENCOURAGE = ['Resposta correta:', 'Quase! A resposta era:', 'Não foi dessa vez:'];
@@ -341,9 +342,13 @@ export async function runSpeed() {
   checkAchievements();
   sfx.complete();
   if (best && score > 0) confetti();
+  const rival = speedRival();
+  const rivalLine = !rival ? ''
+    : score > rival.speed_record ? `<p class="perfect">${esc(rival.avatar)} Você superou o recorde de ${esc(rival.display_name)} (${rival.speed_record})!</p>`
+    : `<p class="muted">${esc(rival.avatar)} Recorde da turma: ${esc(rival.display_name)} · ${rival.speed_record}</p>`;
   await modal({
     title: '⚡ Tempo esgotado!',
-    body: `<div class="center"><div class="big-num">${score}</div><p>acertos em 60 segundos</p>${best && score > 0 ? '<p class="perfect">🏆 Novo recorde!</p>' : `<p class="muted">Recorde: ${state.stats.bestSpeed}</p>`}<p>+${xp} XP · +${Math.floor(score / 3)} 💰</p><p class="muted small">Erros custam 3 s; cada 5 acertos seguidos dão +3 s.</p></div>`,
+    body: `<div class="center"><div class="big-num">${score}</div><p>acertos em 60 segundos</p>${best && score > 0 ? '<p class="perfect">🏆 Novo recorde!</p>' : `<p class="muted">Recorde: ${state.stats.bestSpeed}</p>`}${rivalLine}<p>+${xp} XP · +${Math.floor(score / 3)} 💰</p><p class="muted small">Erros custam 3 s; cada 5 acertos seguidos dão +3 s.</p></div>`,
     actions: [{ label: 'Continuar', value: true }],
   });
   return score;

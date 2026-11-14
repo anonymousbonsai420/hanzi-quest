@@ -7,7 +7,7 @@ If a rule blocks what you were asked to do, **stop and ask a human maintainer** 
 ## Project in one paragraph
 
 Gamified Mandarin-learning PWA for Portuguese speakers. Plain HTML + ES modules, **no build step and no npm
-dependencies** (Hanzi Writer is loaded from jsDelivr). Run locally with `node server.js` → http://localhost:5173.
+dependencies** (Hanzi Writer and, for Friends mode, supabase-js are loaded from jsDelivr). Run locally with `node server.js` → http://localhost:5173.
 Published by GitHub Pages from `main`: https://anonymousbonsai420.github.io/hanzi-quest/
 See `README.md` for the file map and `METODOLOGIA.md` for the pedagogy behind the features.
 
@@ -83,6 +83,19 @@ Hotfix: `git switch main && git pull --ff-only && git switch -c hotfix/<name>`, 
 - Colors only through the CSS variables in `css/styles.css` (light and dark themes must both work).
 - New JS/CSS file → add it to `SHELL` in `sw.js` and bump `CACHE` (`hanziquest-vN`).
 - Never change the `localStorage` key or the shape of saved state without a migration in `js/state.js`.
+
+## Friends mode (Supabase)
+
+- The database lives in `supabase/schema.sql`. Keep it **idempotent** (safe to re-run in the SQL Editor):
+  `create … if not exists`, `create or replace function`, `drop trigger if exists`.
+- Access model: RLS on and **no table privileges** for `anon`/`authenticated`; the app only calls `security definer`
+  functions with `set search_path = ''`, and each one starts with `public.assert_member()` (or `assert_admin()`).
+  Never add table policies or grants that bypass this, and never weaken the invite/member-cap checks.
+- New RPC → grant it explicitly at the end of the schema, mirror it in `js/cloud-mock.js`, and add cases to
+  `supabase/test/schema.test.mjs` (run it before opening the PR).
+- Only the public (anon/publishable) key may appear in `js/config.js`. Never commit a `service_role`/secret key.
+- User-provided text (display names, avatars) must go through `h()` text nodes or `esc()` before any `innerHTML`.
+- Test the UI with `http://localhost:5173/?mock` (simulated server, admin invite `HQ-TEST-ADMN`).
 
 ## Before opening a PR
 
